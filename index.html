@@ -63,6 +63,14 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
 .wbtn{padding:8px 16px;border-radius:10px;font-size:12px;font-weight:700;font-family:var(--font);border:1px solid var(--border2);background:var(--surface2);color:var(--text);cursor:pointer;transition:all .15s}
 .wbtn:hover{border-color:var(--arc);color:var(--arc)}
 .wbtn.on{border-color:var(--arc);color:var(--arc);background:var(--arc-dim)}
+.wallet-wrap{position:relative}
+.wallet-menu{display:none;position:absolute;top:46px;right:0;width:210px;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:8px;z-index:210;box-shadow:0 16px 44px rgba(0,0,0,.55)}
+.wallet-menu.open{display:block;animation:up .16s ease}
+.wm-addr{font-size:10px;font-family:var(--mono);color:var(--muted2);padding:8px 10px;border-bottom:1px solid var(--border);word-break:break-all;margin-bottom:4px;line-height:1.5}
+.wm-item{display:block;width:100%;text-align:left;padding:9px 10px;border-radius:8px;font-size:12px;font-weight:600;font-family:var(--font);background:none;border:none;color:var(--text);cursor:pointer}
+.wm-item:hover{background:var(--surface2)}
+.wm-item.danger{color:var(--danger)}
+.wm-item.danger:hover{background:rgba(239,68,68,.1)}
 
 /* MAIN */
 .main{margin-left:var(--sidebar-w);padding:28px 26px 90px;position:relative;z-index:1;max-width:1240px}
@@ -116,6 +124,16 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
 .b-low{background:rgba(34,197,94,.12);color:var(--success)}
 .b-med{background:rgba(245,158,11,.12);color:var(--warn)}
 .b-high{background:rgba(239,68,68,.12);color:var(--danger)}
+.b-verified{background:rgba(0,212,170,.14);color:var(--arc);display:inline-flex;align-items:center;gap:3px}
+.copy-mini{background:var(--surface2);border:1px solid var(--border2);color:var(--muted2);font-family:var(--mono);font-size:9px;padding:2px 7px;border-radius:5px;cursor:pointer;margin-left:6px}
+.copy-mini:hover{border-color:var(--arc);color:var(--arc)}
+.founder-action{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.fa-title{font-size:10px;font-family:var(--mono);color:var(--muted2);letter-spacing:.6px;text-transform:uppercase;margin-bottom:8px}
+.fa-input{flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:9px;padding:9px 12px;font-size:13px;font-family:var(--font);color:var(--text);outline:none}
+.fa-input:focus{border-color:var(--arc)}
+.claimall-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;border-radius:12px;background:var(--arc-dim);border:1px solid rgba(0,212,170,.3);margin-bottom:16px;flex-wrap:wrap}
+.claimall-bar .cab-txt{font-size:12.5px;font-family:var(--mono);color:var(--text)}
+.claimall-bar .cab-txt b{color:var(--arc)}
 .ac-name{font-size:16.5px;font-weight:800;letter-spacing:-.3px;margin-bottom:2px}
 .ac-co{font-size:11px;font-family:var(--mono);color:var(--muted2);margin-bottom:10px}
 .ac-desc{font-size:12.5px;color:var(--muted);line-height:1.5;margin-bottom:14px;min-height:36px}
@@ -332,6 +350,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
   <button class="nitem" data-page="discover" onclick="nav('discover',this)"><span class="ic">DS</span>Discover</button>
   <button class="nitem" data-page="studio" onclick="nav('studio',this)"><span class="ic">BS</span>Builder Studio</button>
   <button class="nitem" data-page="vault" onclick="nav('vault',this)"><span class="ic">VA</span>Vault</button>
+  <button class="nitem" data-page="founder" onclick="nav('founder',this)"><span class="ic">FD</span>Founder</button>
   <div class="nav-sec">Intelligence</div>
   <button class="nitem" data-page="stable" onclick="nav('stable',this)"><span class="ic">US</span>Stablecoin Hub</button>
   <button class="nitem" data-page="analytics" onclick="nav('analytics',this)"><span class="ic">AN</span>Analytics</button>
@@ -349,7 +368,15 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
   </div>
   <div class="top-right">
     <div class="chain-pill"><span class="net-dot"></span>ARC TESTNET</div>
-    <button class="wbtn" id="wbtn" onclick="connectWallet()">Connect Wallet</button>
+    <div class="wallet-wrap">
+      <button class="wbtn" id="wbtn" onclick="onWalletBtn()">Connect Wallet</button>
+      <div class="wallet-menu" id="walletMenu">
+        <div class="wm-addr" id="wmAddr"></div>
+        <button class="wm-item" onclick="copyWallet()">Copy Address</button>
+        <button class="wm-item" onclick="viewWalletExplorer()">View on Explorer</button>
+        <button class="wm-item danger" onclick="disconnectWallet()">Disconnect Wallet</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -508,6 +535,16 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
   </div>
 </div>
 
+<div class="page" id="page-founder">
+  <div class="page-head">
+    <h1>Founder Dashboard</h1>
+    <p>Manage the assets you have launched — track raises, distribute dividends and withdraw capital, all on-chain.</p>
+  </div>
+  <div id="founderContent">
+    <div class="empty"><div class="ei">FD</div><h3>Connect your wallet</h3><p>Your launched assets and dividend tools appear here</p></div>
+  </div>
+</div>
+
 <div class="page" id="page-stable">
   <div class="page-head">
     <h1>Stablecoin Hub</h1>
@@ -624,7 +661,9 @@ const ASSET_TOKEN_ABI = [
   "function totalInvested(address) view returns (uint256)",
   "function totalPurchasedTokens(address) view returns (uint256)",
   "function purchaseTokens(uint256 tokenAmount)",
-  "function claimDividends()"
+  "function claimDividends()",
+  "function distributeDividends(uint256 usdcAmount)",
+  "function withdrawRaised(uint256 amount)"
 ];
 const ERC20_ABI = [
   "function approve(address spender,uint256 amount) returns (bool)",
@@ -802,14 +841,19 @@ function renderDiscover(){
   if(!arr.length){el.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="ei">DS</div><h3>Nothing matches</h3><p>Try another filter or launch an asset</p></div>`;return;}
   el.innerHTML=arr.map(p=>assetCardHTML(p)).join("");
 }
+function isVerified(p){
+  return p.target>0 && p.company.trim().length>0 && p.description.trim().length>0 && p.maxSupply>0;
+}
 function assetCardHTML(p){
   const pct=p.target>0?Math.min(100,(p.raised/p.target)*100):0;
   const re=riskEngine(p);
+  const ver=isVerified(p);
   return `
   <div class="acard" style="--tc:${TYPE_C[p.assetType]}" onclick="openAsset(${p.id})">
     <div class="ac-top">
       <div class="ac-ico" style="background:${TYPE_C[p.assetType]}">${TYPE_I[p.assetType]}</div>
       <div class="badges">
+        ${ver?'<span class="tbadge b-verified">VERIFIED</span>':''}
         <span class="tbadge ${TYPE_B[p.assetType]}">${TYPE_N[p.assetType]}</span>
         <span class="tbadge ${RISK_B[p.riskTier]}">${RISK_N[p.riskTier]} RISK</span>
       </div>
@@ -854,8 +898,10 @@ function openAsset(id){
     <div class="review-row"><span class="rk">RAISED</span><span class="rv" style="color:var(--arc)">${fmtUsd(p.raised)} (${pct.toFixed(1)}%)</span></div>
     <div class="review-row"><span class="rk">TOKENS SOLD</span><span class="rv">${p.sold.toLocaleString()} / ${p.maxSupply.toLocaleString()}</span></div>
     <div class="review-row"><span class="rk">BUILDER</span><span class="rv">${short(p.founder)}${bs?` · Trust ${bs.trust}/100`:``}</span></div>
+    <div class="review-row"><span class="rk">VERIFIED</span><span class="rv" style="color:${isVerified(p)?"var(--arc)":"var(--muted2)"}">${isVerified(p)?"Passes metadata check":"Incomplete metadata"}</span></div>
     <div class="review-row"><span class="rk">STATUS</span><span class="rv" style="color:${p.active?"var(--success)":"var(--danger)"}">${p.active?"Raising":"Closed"}</span></div>
-    <div class="review-row"><span class="rk">CONTRACT</span><a class="chip" target="_blank" href="${EXPLORER}/address/${p.tokenContract}">${short(p.tokenContract)}</a></div>`;
+    <div class="review-row"><span class="rk">CONTRACT</span><span><a class="chip" target="_blank" href="${EXPLORER}/address/${p.tokenContract}">${short(p.tokenContract)}</a><button class="copy-mini" onclick="event.stopPropagation();copyText('${p.tokenContract}')">copy</button></span></div>
+    <div style="font-size:10px;font-family:var(--mono);color:var(--muted2);margin-top:10px;line-height:1.5">AI Risk score is a computed assessment derived from on-chain data (risk tier, funding, age, valuation) — not a value stored on-chain.</div>`;
   document.getElementById("amBuy").innerHTML=`
     <h4>Purchase with USDC</h4>
     <div class="brow2">
@@ -893,8 +939,8 @@ async function buyTokens(){
     toast("Purchasing on Arc","inf");
     const t=new ethers.Contract(currentAsset.tokenContract,ASSET_TOKEN_ABI,signer);
     const tx=await t.purchaseTokens(BigInt(q));
-    await tx.wait();
-    toast(`Purchased ${q} ${currentAsset.symbol}`,"ok");
+    const rc=await tx.wait();
+    toastLink(`Purchased ${q} ${currentAsset.symbol}`,rc.hash);
     closeAsset();await loadEverything();
   }catch(e){toast("Error: "+(e.reason||e.shortMessage||e.message),"err");}
   btn.disabled=false;btn.textContent="Invest with USDC";
@@ -908,8 +954,8 @@ async function claimDivs(){
     if(pending===0n){toast("No dividends to claim yet","inf");return;}
     toast("Claiming dividends","inf");
     const tx=await t.claimDividends();
-    await tx.wait();
-    toast("Dividends claimed","ok");
+    const rc=await tx.wait();
+    toastLink("Dividends claimed",rc.hash);
     await loadEverything();
   }catch(e){toast("Error: "+(e.reason||e.shortMessage||e.message),"err");}
 }
@@ -988,7 +1034,7 @@ async function deployAsset(){
       BigInt(v("sMax"))
     );
     const rc=await tx.wait();
-    toast(`${v("sSymbol")} deployed on Arc`,"ok");
+    toastLink(`${v("sSymbol")} deployed on Arc`,rc.hash);
     console.log("TX:",rc.hash,"->",EXPLORER+"/tx/"+rc.hash);
     ["sCompany","sName","sSymbol","sDesc","sVal","sPrice","sMax","sCap"].forEach(id=>document.getElementById(id).value="");
     wgo(0);
@@ -1013,13 +1059,16 @@ async function renderVault(){
     }));
     const holdings=settled.filter(r=>r.status==="fulfilled").map(r=>r.value);
     const owned=holdings.filter(h=>h.bal>0);
+    window._vaultOwned=owned;
     const totVal=owned.reduce((s,h)=>s+h.bal*h.price,0);
     const totInv=owned.reduce((s,h)=>s+h.inv,0);
     const totPend=owned.reduce((s,h)=>s+h.pend,0);
+    const claimableCount=owned.filter(h=>h.pend>0).length;
     const bs=builderScore(wallet);
     const conc=owned.length?Math.max(...owned.map(h=>h.bal*h.price))/Math.max(1,totVal)*100:0;
     const health=owned.length?Math.round(100-Math.max(0,conc-40)):0;
     el.innerHTML=`
+    ${claimableCount>0?`<div class="claimall-bar"><div class="cab-txt">You have <b>${fmtUsd(totPend)}</b> in claimable dividends across <b>${claimableCount}</b> position(s)</div><button class="btn" onclick="claimAll()">Claim All</button></div>`:''}
     <div class="gridN g4">
       <div class="card kpi"><div class="kv">${fmtK(totVal)}</div><div class="kl">Portfolio Value</div></div>
       <div class="card kpi"><div class="kv">${fmtK(totInv)}</div><div class="kl">Cost Basis (on-chain)</div></div>
@@ -1148,14 +1197,16 @@ function copilotAnswer(q){
 
 /* COMMAND PALETTE */
 const CMDS=[
-  {ic:"HQ",t:"Go to Dashboard",fn:()=>nav("dash",document.querySelector('[data-page="dash"]'))},
-  {ic:"DS",t:"Go to Discover",fn:()=>nav("discover",document.querySelector('[data-page="discover"]'))},
-  {ic:"BS",t:"Launch an asset (Builder Studio)",fn:()=>nav("studio",document.querySelector('[data-page="studio"]'))},
-  {ic:"VA",t:"Open my Vault",fn:()=>nav("vault",document.querySelector('[data-page="vault"]'))},
-  {ic:"US",t:"Stablecoin Hub",fn:()=>nav("stable",document.querySelector('[data-page="stable"]'))},
-  {ic:"AN",t:"Analytics and Leaderboard",fn:()=>nav("analytics",document.querySelector('[data-page="analytics"]'))},
+  {ic:"HQ",t:"Go to Dashboard",fn:()=>nav("dash",null)},
+  {ic:"DS",t:"Go to Discover",fn:()=>nav("discover",null)},
+  {ic:"BS",t:"Launch an asset (Builder Studio)",fn:()=>nav("studio",null)},
+  {ic:"VA",t:"Open my Vault",fn:()=>nav("vault",null)},
+  {ic:"FD",t:"Founder Dashboard",fn:()=>nav("founder",null)},
+  {ic:"US",t:"Stablecoin Hub",fn:()=>nav("stable",null)},
+  {ic:"AN",t:"Analytics and Leaderboard",fn:()=>nav("analytics",null)},
   {ic:"AI",t:"Ask the AI Copilot",fn:()=>toggleCopilot()},
-  {ic:"WL",t:"Connect wallet",fn:()=>connectWallet()},
+  {ic:"WL",t:"Connect wallet",fn:()=>{if(wallet)toast("Wallet already connected","inf");else connectWallet();}},
+  {ic:"DC",t:"Disconnect wallet",fn:()=>{if(wallet)disconnectWallet();else toast("No wallet connected","inf");}},
   {ic:"RF",t:"Refresh chain data",fn:()=>loadEverything()},
   {ic:"EX",t:"Open Arc explorer",fn:()=>window.open(EXPLORER,"_blank")},
   {ic:"FC",t:"Get testnet USDC (faucet)",fn:()=>window.open("https://faucet.circle.com","_blank")}
@@ -1188,6 +1239,11 @@ document.addEventListener("keydown",e=>{
 });
 document.getElementById("cmdk").addEventListener("click",e=>{if(e.target.id==="cmdk")closeCmdk();});
 document.getElementById("assetOv").addEventListener("click",e=>{if(e.target.id==="assetOv")closeAsset();});
+document.addEventListener("click",e=>{
+  const wrap=document.querySelector(".wallet-wrap");
+  const menu=document.getElementById("walletMenu");
+  if(wrap && menu && !wrap.contains(e.target)) menu.classList.remove("open");
+});
 
 /* NAV / WALLET / TOAST */
 function nav(page,btn){
@@ -1196,7 +1252,12 @@ function nav(page,btn){
   document.querySelectorAll(".nitem[data-page]").forEach(n=>n.classList.toggle("on",n.dataset.page===page));
   document.querySelectorAll(".bn-item[data-page]").forEach(n=>n.classList.toggle("on",n.dataset.page===page));
   if(page==="vault"&&wallet)renderVault();
+  if(page==="founder")renderFounder();
   window.scrollTo({top:0,behavior:"smooth"});
+}
+function onWalletBtn(){
+  if(wallet){document.getElementById("walletMenu").classList.toggle("open");}
+  else connectWallet();
 }
 async function connectWallet(){
   if(!window.ethereum){toast("MetaMask not found — install it first","err");return;}
@@ -1217,14 +1278,146 @@ async function connectWallet(){
     wallet=await signer.getAddress();
     const b=document.getElementById("wbtn");
     b.textContent=short(wallet);b.classList.add("on");
+    document.getElementById("wmAddr").textContent=wallet;
     toast("Connected to Arc Testnet","ok");
-    renderVault();
+    renderVault();renderFounder();
   }catch(e){toast("Connect failed: "+e.message,"err");}
 }
+function disconnectWallet(){
+  signer=null;wallet=null;
+  const b=document.getElementById("wbtn");
+  b.textContent="Connect Wallet";b.classList.remove("on");
+  document.getElementById("walletMenu").classList.remove("open");
+  document.getElementById("wmAddr").textContent="";
+  window._vaultOwned=[];
+  renderVault();renderFounder();
+  toast("Wallet disconnected","inf");
+}
+function copyWallet(){
+  if(!wallet)return;
+  navigator.clipboard.writeText(wallet);
+  toast("Address copied","ok");
+  document.getElementById("walletMenu").classList.remove("open");
+}
+function viewWalletExplorer(){
+  if(!wallet)return;
+  window.open(EXPLORER+"/address/"+wallet,"_blank");
+  document.getElementById("walletMenu").classList.remove("open");
+}
+function copyText(t){navigator.clipboard.writeText(t);toast("Copied to clipboard","ok");}
+
 function toast(m,t="inf"){
   const el=document.getElementById("toast");
   el.textContent=m;el.className=`toast ${t} show`;
   setTimeout(()=>el.classList.remove("show"),3800);
+}
+function toastLink(m,hash,t="ok"){
+  const el=document.getElementById("toast");
+  el.innerHTML=m+' &middot; <a href="'+EXPLORER+'/tx/'+hash+'" target="_blank" style="color:inherit;text-decoration:underline">view tx</a>';
+  el.className=`toast ${t} show`;
+  setTimeout(()=>el.classList.remove("show"),5500);
+}
+
+/* FOUNDER DASHBOARD — all real on-chain data */
+function goStudio(){nav('studio',null);}
+async function renderFounder(){
+  const el=document.getElementById("founderContent");
+  if(!wallet){el.innerHTML=`<div class="empty"><div class="ei">FD</div><h3>Connect your wallet</h3><p>Your launched assets and dividend tools appear here</p></div>`;return;}
+  const mine=projects.filter(p=>p.founder.toLowerCase()===wallet.toLowerCase());
+  if(!mine.length){
+    el.innerHTML=`<div class="empty"><div class="ei">FD</div><h3>You have not launched any assets yet</h3><p>Open Builder Studio to create your first tokenized asset on Arc</p><button class="btn" style="margin-top:14px" onclick="goStudio()">Launch an asset</button></div>`;
+    return;
+  }
+  const totalRaised=mine.reduce((s,p)=>s+p.raised,0);
+  const bs=builderScore(wallet);
+  el.innerHTML=`
+  <div class="gridN g4">
+    <div class="card kpi"><div class="kv">${mine.length}</div><div class="kl">Assets Launched</div></div>
+    <div class="card kpi"><div class="kv">${fmtK(totalRaised)}</div><div class="kl">Total Raised</div></div>
+    <div class="card kpi"><div class="kv">${mine.filter(p=>p.active).length}</div><div class="kl">Active Raises</div></div>
+    <div class="card kpi"><div class="kv">${bs?bs.trust+"/100":"—"}</div><div class="kl">Builder Trust</div></div>
+  </div>
+  <div class="sect-title">Your Launched Assets</div>
+  <div class="gridN g2">
+    ${mine.map(p=>{
+      const pct=p.target>0?Math.min(100,(p.raised/p.target)*100):0;
+      return `
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+          <div><div style="font-size:16px;font-weight:800;letter-spacing:-.3px">${p.name}</div><div style="font-size:11px;font-family:var(--mono);color:var(--muted2)">${p.symbol} &middot; ${TYPE_N[p.assetType]}</div></div>
+          <span class="tbadge ${p.active?'b-low':'b-high'}">${p.active?'RAISING':'CLOSED'}</span>
+        </div>
+        <div class="pmeta"><span class="pr">${fmtK(p.raised)} raised</span><span class="pt">${pct.toFixed(0)}% of ${fmtK(p.target)}</span></div>
+        <div class="pbar"><div class="pfill" style="width:${pct}%"></div></div>
+        <div class="vrow"><span class="vk">TOKENS SOLD</span><span class="vv">${p.sold.toLocaleString()} / ${p.maxSupply.toLocaleString()}</span></div>
+        <div class="vrow"><span class="vk">CONTRACT</span><span><a class="chip" target="_blank" href="${EXPLORER}/address/${p.tokenContract}">${short(p.tokenContract)}</a><button class="copy-mini" onclick="copyText('${p.tokenContract}')">copy</button></span></div>
+        <div class="founder-action">
+          <div class="fa-title">Distribute Dividends to Holders (USDC)</div>
+          <div style="display:flex;gap:8px">
+            <input class="fa-input" id="dist-${p.id}" type="number" min="0" placeholder="500"/>
+            <button class="btn" onclick="distributeDividends('${p.tokenContract}','dist-${p.id}')">Distribute</button>
+          </div>
+        </div>
+        <div class="founder-action">
+          <div class="fa-title">Withdraw Raised USDC</div>
+          <div style="display:flex;gap:8px">
+            <input class="fa-input" id="wd-${p.id}" type="number" min="0" placeholder="1000"/>
+            <button class="btn btn-ghost" onclick="withdrawRaised('${p.tokenContract}','wd-${p.id}')">Withdraw</button>
+          </div>
+        </div>
+      </div>`;
+    }).join("")}
+  </div>`;
+}
+async function distributeDividends(tokenAddr,inputId){
+  if(!signer){toast("Connect wallet first","err");return;}
+  const amt=parseFloat(document.getElementById(inputId).value);
+  if(!amt||amt<=0){toast("Enter a USDC amount","err");return;}
+  const usdcAmt=ethers.parseUnits(String(amt),6);
+  try{
+    const usdc=new ethers.Contract(USDC_ADDRESS,ERC20_ABI,signer);
+    const allow=await usdc.allowance(wallet,tokenAddr);
+    if(allow<usdcAmt){
+      toast("Approving USDC","inf");
+      const atx=await usdc.approve(tokenAddr,usdcAmt);await atx.wait();
+    }
+    toast("Distributing dividends on Arc","inf");
+    const t=new ethers.Contract(tokenAddr,ASSET_TOKEN_ABI,signer);
+    const tx=await t.distributeDividends(usdcAmt);
+    const rc=await tx.wait();
+    toastLink("Dividends distributed to holders",rc.hash);
+    await loadEverything();
+  }catch(e){toast("Error: "+(e.reason||e.shortMessage||e.message),"err");}
+}
+async function withdrawRaised(tokenAddr,inputId){
+  if(!signer){toast("Connect wallet first","err");return;}
+  const amt=parseFloat(document.getElementById(inputId).value);
+  if(!amt||amt<=0){toast("Enter a USDC amount","err");return;}
+  const usdcAmt=ethers.parseUnits(String(amt),6);
+  try{
+    toast("Withdrawing raised USDC","inf");
+    const t=new ethers.Contract(tokenAddr,ASSET_TOKEN_ABI,signer);
+    const tx=await t.withdrawRaised(usdcAmt);
+    const rc=await tx.wait();
+    toastLink("Withdrawal confirmed",rc.hash);
+    await loadEverything();
+  }catch(e){toast("Error: "+(e.reason||e.shortMessage||e.message),"err");}
+}
+async function claimAll(){
+  if(!signer){toast("Connect wallet first","err");return;}
+  const claimable=(window._vaultOwned||[]).filter(h=>h.pend>0);
+  if(!claimable.length){toast("Nothing to claim right now","inf");return;}
+  toast(`Claiming from ${claimable.length} position(s)`,"inf");
+  let done=0,lastHash=null;
+  for(const h of claimable){
+    try{
+      const t=new ethers.Contract(h.tokenContract,ASSET_TOKEN_ABI,signer);
+      const tx=await t.claimDividends();const rc=await tx.wait();lastHash=rc.hash;done++;
+    }catch(e){console.warn("Claim failed for",h.symbol,e);}
+  }
+  if(done&&lastHash)toastLink(`Claimed dividends from ${done} position(s)`,lastHash);
+  else toast(done?`Claimed from ${done}`:"No claims went through","err");
+  await loadEverything();
 }
 
 /* boot */
