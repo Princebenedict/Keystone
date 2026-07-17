@@ -1,8 +1,11 @@
- # ArcVault
+ # Keystone
 
 > The Intelligence Layer for Arc. Build, discover, invest, deploy and manage
 > tokenized assets, stablecoin applications and AI-powered financial
 > infrastructure on Arc.
+
+## Trademark
+Built on Arc Network. Arc™ is a trademark of Circle Internet Group, Inc. and/or its affiliates. Keystone is an independent product and is not endorsed by or formally affiliated with Circle.
 
  frontend.
 
@@ -15,7 +18,7 @@
 [https://arc-launchpad.vercel.app/](https://arc-launchpad.vercel.app/)
 
 ## One-Line Pitch
-ArcVault turns asset issuance and investment into an onchain experience: founders launch tokenized offerings, investors discover real contract-created listings, buy with USDC, and claim dividends directly from the app.
+Keystone turns asset issuance and investment into an onchain experience: founders launch tokenized offerings, investors discover real contract-created listings, buy with USDC, and claim dividends directly from the app.
 
 ## The Problem
 Access to real-world asset participation is still fragmented:
@@ -25,7 +28,7 @@ Access to real-world asset participation is still fragmented:
 - portfolio visibility is rarely tied directly to deployed token contracts
 
 ## The Solution
-ArcVault solves that with a launchpad built around real onchain primitives:
+Keystone solves that with a launchpad built around real onchain primitives:
 - a factory contract deploys an asset token per listing
 - the frontend reads only actual launchpad-created assets
 - risk tier is stored onchain
@@ -123,7 +126,7 @@ Vercel
 
 
 Repository Structure
-arc-launchpad/
+Keystone/
 ├── contracts/
 │   ├── AssetToken.sol          ← ERC-20 per asset + dividends
 │   └── AssetLaunchpad.sol      ← Factory that deploys AssetTokens
@@ -212,3 +215,4 @@ Princebenedict
 
 License
 MIT
+

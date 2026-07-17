@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ArcVault — The Intelligence Layer for Arc</title>
+<title>Keystone — Built on Arc Network</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.2/dist/ethers.umd.min.js"></script>
 <style>
@@ -381,7 +381,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
 }
 </style>
 <style id="lp-style">
-/* ===== ARCVAULT CINEMATIC LANDING (scoped overlay) ===== */
+/* ===== KEYSTONE CINEMATIC LANDING (scoped overlay) ===== */
 #landing{position:fixed;inset:0;z-index:500;overflow-y:auto;overflow-x:hidden;background:#05070A;color:#e8eef8;font-family:"Inter",-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
 #landing.hide{display:none}
 #landing.fade-out{opacity:0;transition:opacity .55s ease;pointer-events:none}
@@ -543,7 +543,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
   <!-- NAV -->
   <nav class="lp-nav" id="lpNav">
     <div class="lp-nav-inner">
-      <div class="lp-brand"><div class="lpm">AV</div><div>ArcVault<small>INTELLIGENCE LAYER</small></div></div>
+      <div class="lp-brand"><div class="lpm">KS</div><div>Keystone<small>BUILT ON ARC</small></div></div>
       <div class="lp-links">
         <a onclick="lpScroll('lp-features')">Features</a>
         <a onclick="lpScroll('lp-how')">How it works</a>
@@ -556,11 +556,11 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
   <!-- HERO -->
   <section class="lp-hero">
     <div class="lp-hero-left">
-      <div class="lp-hero-badge"><span class="g"></span>Built on Arc &middot; Circle's stablecoin-native L1</div>
+      <div class="lp-hero-badge"><span class="g"></span>Built on Arc Network &middot; Circle's stablecoin-native L1</div>
       <h1 class="lp-h1">The <span class="grad">Intelligence Layer</span> for Arc</h1>
       <p class="lead">Build, discover, invest and manage tokenized assets with an AI risk engine, on-chain builder reputation and USDC-native settlement — all in one intelligent platform.</p>
       <div class="lp-hero-cta">
-        <button class="lp-btn lp-btn-primary" onclick="enterApp()">Enter ArcVault
+        <button class="lp-btn lp-btn-primary" onclick="enterApp()">Enter Keystone
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
         <button class="lp-btn lp-btn-ghost" onclick="lpScroll('lp-how')">See how it works</button>
@@ -674,8 +674,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
   <div class="lp-final">
     <div class="lp-reveal">
       <h2>Build the future of<br/>tokenized assets on Arc</h2>
-      <p>Join builders and investors using ArcVault as the intelligence layer for the Arc ecosystem.</p>
-      <button class="lp-btn lp-btn-primary" onclick="enterApp()">Enter ArcVault
+      <p>Join builders and investors using Keystone as the intelligence layer for the Arc ecosystem.</p>
+      <button class="lp-btn lp-btn-primary" onclick="enterApp()">Enter Keystone
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
       </button>
     </div>
@@ -683,14 +683,14 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
 
   <!-- FOOTER -->
   <footer class="lp-footer">
-    <div class="fb"><div class="lpm">AV</div>ArcVault</div>
+    <div class="fb"><div class="lpm">KS</div>Keystone</div>
     <div class="flinks">
       <a onclick="lpScroll('lp-features')">Features</a>
       <a onclick="lpScroll('lp-how')">How it works</a>
       <a href="https://testnet.arcscan.app" target="_blank">Explorer</a>
       <a onclick="enterApp()">Launch App</a>
     </div>
-    <div class="fcopy">The Intelligence Layer for Arc</div>
+    <div class="fcopy">Built on Arc Network. Arc™ is a trademark of Circle Internet Group, Inc. and/or its affiliates.</div>
   </footer>
 </div>
 
@@ -699,8 +699,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
 
 <aside class="sidebar">
   <div class="brand">
-    <div class="brand-mark">AV</div>
-    <div>ArcVault<small>INTELLIGENCE LAYER</small></div>
+    <div class="brand-mark">KS</div>
+    <div>Keystone<small>BUILT ON ARC</small></div>
   </div>
   <div class="nav-sec">Platform</div>
   <button class="nitem on" data-page="dash" onclick="nav('dash',this)"><span class="ic">HQ</span>Dashboard</button>
@@ -716,6 +716,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
     <div><span class="net-dot"></span>Arc Testnet · 5042002</div>
     <div id="sideBlock">Block —</div>
     <div>USDC gas · ~0.5s finality</div>
+    <div style="margin-top:7px;opacity:.65">Arc™ is a trademark of Circle Internet Group, Inc.</div>
   </div>
 </aside>
 
@@ -738,7 +739,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
 </div>
 
 <div class="netbanner" id="netbanner">
-  <span>Wrong network detected. ArcVault runs on Arc Testnet (Chain ID 5042002).</span>
+  <span>Wrong network detected. Keystone runs on Arc Testnet (Chain ID 5042002).</span>
   <button onclick="switchNetwork()">Switch to Arc Testnet</button>
 </div>
 
@@ -753,7 +754,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
 <div class="page active" id="page-dash">
   <div class="page-head">
     <h1>Mission Control</h1>
-    <p>Live view of the ArcVault ecosystem on Arc Testnet — assets, capital, builders and network state.</p>
+    <p>Live view of the Keystone ecosystem on Arc Testnet — assets, capital, builders and network state.</p>
   </div>
 
   <div class="gridN g4" id="kpiRow">
@@ -920,7 +921,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
     <p>USDC is Arc's native gas and settlement currency. Track platform flows and Circle-native rails.</p>
   </div>
   <div class="gridN g4">
-    <div class="card kpi"><div class="kv" id="stRaised">—</div><div class="kl">USDC Settled via ArcVault</div></div>
+    <div class="card kpi"><div class="kv" id="stRaised">—</div><div class="kl">USDC Settled via Keystone</div></div>
     <div class="card kpi"><div class="kv" id="stFees">—</div><div class="kl">Listing Fees Collected</div></div>
     <div class="card kpi"><div class="kv">USDC</div><div class="kl">Native Gas Token</div></div>
     <div class="card kpi"><div class="kv">~0.5s</div><div class="kl">Settlement Finality</div></div>
@@ -928,8 +929,8 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
   <div class="sect-title">Circle-Native Rails on Arc</div>
   <div class="gridN g3">
     <div class="card hover"><b style="font-size:14px">StableFX</b><p style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6">On-chain FX engine for USDC / EURC pairs. RFQ-based settlement, 24/7. FxEscrow: <a class="chip" target="_blank" href="https://testnet.arcscan.app/address/0x867650F5eAe8df91445971f14d89fd84F0C9a9f8">0x8676…a9f8</a></p></div>
-    <div class="card hover"><b style="font-size:14px">CCTP v2</b><p style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6">Native USDC transfer across chains. Bring capital from Ethereum or Solana into ArcVault raises. Messenger: <a class="chip" target="_blank" href="https://testnet.arcscan.app/address/0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA">0x8FE6…2DAA</a></p></div>
-    <div class="card hover"><b style="font-size:14px">USYC</b><p style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6">Tokenized yield for idle treasury. Future ArcVault raises can auto-park unspent USDC into yield. <a class="chip" target="_blank" href="https://testnet.arcscan.app/address/0xe9185F0c5F296Ed1797AaE4238D26CCaBEadb86C">0xe918…86C</a></p></div>
+    <div class="card hover"><b style="font-size:14px">CCTP v2</b><p style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6">Native USDC transfer across chains. Bring capital from Ethereum or Solana into Keystone raises. Messenger: <a class="chip" target="_blank" href="https://testnet.arcscan.app/address/0x8FE6B999Dc680CcFDD5Bf7EB0974218be2542DAA">0x8FE6…2DAA</a></p></div>
+    <div class="card hover"><b style="font-size:14px">USYC</b><p style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6">Tokenized yield for idle treasury. Future Keystone raises can auto-park unspent USDC into yield. <a class="chip" target="_blank" href="https://testnet.arcscan.app/address/0xe9185F0c5F296Ed1797AaE4238D26CCaBEadb86C">0xe918…86C</a></p></div>
   </div>
   <div style="margin-top:16px;font-size:11px;font-family:var(--mono);color:var(--muted2)">Native gas token (USDC): <a class="chip" target="_blank" href="https://testnet.arcscan.app/address/0x3600000000000000000000000000000000000000">0x3600…0000</a></div>
 </div>
@@ -964,10 +965,10 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
 <div class="copilot" id="copilot">
   <div class="cp-head">
     <div class="cp-ic">AI</div>
-    <div><b>ArcVault Copilot</b><small>ON-CHAIN INTELLIGENCE · RUNS IN YOUR BROWSER</small></div>
+    <div><b>Keystone Copilot</b><small>ON-CHAIN INTELLIGENCE · RUNS IN YOUR BROWSER</small></div>
   </div>
   <div class="cp-body" id="cpBody">
-    <div class="cp-msg bot">Welcome. I am your ArcVault copilot. I read live chain state and can explain anything on the platform. Try a quick prompt below.</div>
+    <div class="cp-msg bot">Welcome. I am your Keystone copilot. I read live chain state and can explain anything on the platform. Try a quick prompt below.</div>
   </div>
   <div class="cp-quick">
     <button class="cpq" onclick="askCopilot('How do I launch an asset?')">How do I launch?</button>
@@ -977,7 +978,7 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.2;z-
     <button class="cpq" onclick="askCopilot('What is Builder Score?')">Builder Score?</button>
   </div>
   <div class="cp-input">
-    <input id="cpIn" placeholder="Ask anything about ArcVault or Arc" onkeydown="if(event.key==='Enter')sendCopilot()"/>
+    <input id="cpIn" placeholder="Ask anything about Keystone or Arc" onkeydown="if(event.key==='Enter')sendCopilot()"/>
     <button onclick="sendCopilot()">Send</button>
   </div>
 </div>
@@ -1063,7 +1064,7 @@ const RISK_B={0:"b-low",1:"b-med",2:"b-high"};
 const RISK_TIP="Risk tier is set by the founder and stored on-chain. Higher tiers indicate higher potential volatility.";
 
 /* PRIVATE REMOVAL — founder-managed hidden list (client-side moderation layer) */
-const HIDDEN_KEY="arcvault_hidden_assets";
+const HIDDEN_KEY="keystone_hidden_assets";
 function getHidden(){try{return JSON.parse(localStorage.getItem(HIDDEN_KEY)||"[]");}catch(_){return [];}}
 function setHiddenList(a){try{localStorage.setItem(HIDDEN_KEY,JSON.stringify(a));}catch(_){}}
 function isHidden(addr){return getHidden().map(x=>x.toLowerCase()).includes(addr.toLowerCase());}
@@ -1577,7 +1578,7 @@ function copilotAnswer(q){
     return "On Arc, USDC is the gas token — fees are dollar-denominated and predictable. Listing an asset costs 1 USDC. Buys settle in ~0.5s. Get testnet USDC free at faucet.circle.com (select Arc Testnet).";
   }
   if(q.includes("arc")||q.includes("circle")||q.includes("chain")){
-    return "Arc is Circle's stablecoin-native L1: EVM-compatible, USDC as gas, sub-second deterministic finality, opt-in privacy, and native rails like CCTP v2 (cross-chain USDC), StableFX (on-chain FX) and USYC (tokenized yield). ArcVault is built directly on it — Chain ID 5042002.";
+    return "Arc is Circle's stablecoin-native L1: EVM-compatible, USDC as gas, sub-second deterministic finality, opt-in privacy, and native rails like CCTP v2 (cross-chain USDC), StableFX (on-chain FX) and USYC (tokenized yield). Keystone is built directly on it — Chain ID 5042002.";
   }
   if(q.includes("dividend")||q.includes("claim")||q.includes("yield")){
     return "Founders distribute USDC into their token contract; your share accrues automatically pro-rata to holdings. Check the Vault for claimable amounts, then use Claim Dividends inside any asset modal — one transaction, paid straight to your wallet.";
@@ -1890,7 +1891,7 @@ async function claimAll(){
 
 
 /* ===== PRIVATE CONTROL CENTER (admin — client-side moderation) ===== */
-const CC_KEY = "arcvaultadmin2026"; /* CHANGE THIS to your own secret passphrase */
+const CC_KEY = "keystone-admin-2026"; /* CHANGE THIS to your own secret passphrase */
 function ccIsUnlocked(){try{return sessionStorage.getItem("cc_unlocked")==="1";}catch(_){return false;}}
 function openControl(){document.getElementById("ccOverlay").classList.add("open");renderControl();}
 function closeControl(){document.getElementById("ccOverlay").classList.remove("open");}
@@ -1941,7 +1942,7 @@ function renderControl(){
     </div>
 
     <div class="cc-section-title">Ship an Update — public announcement banner</div>
-    <textarea id="ccAnn" class="cc-textarea" placeholder="e.g. New tokenized assets dropping this week on ArcVault. Stay tuned.">${ann?ann.replace(/&/g,"&amp;").replace(/</g,"&lt;"):""}</textarea>
+    <textarea id="ccAnn" class="cc-textarea" placeholder="e.g. New tokenized assets dropping this week on Keystone. Stay tuned.">${ann?ann.replace(/&/g,"&amp;").replace(/</g,"&lt;"):""}</textarea>
     <div style="display:flex;gap:8px;margin-top:8px">
       <button class="btn" onclick="publishAnnouncement()">Publish</button>
       <button class="btn btn-ghost" onclick="clearAnnouncementAdmin()">Clear</button>
@@ -1970,16 +1971,16 @@ function renderControl(){
 }
 
 /* announcements */
-function getAnnouncement(){try{return localStorage.getItem("arcvault_announcement")||"";}catch(_){return "";}}
+function getAnnouncement(){try{return localStorage.getItem("keystone_announcement")||"";}catch(_){return "";}}
 function publishAnnouncement(){
   const el=document.getElementById("ccAnn");
   const t=el?el.value.trim():"";
-  try{localStorage.setItem("arcvault_announcement",t);}catch(_){}
+  try{localStorage.setItem("keystone_announcement",t);}catch(_){}
   try{sessionStorage.removeItem("ann_dismissed");}catch(_){}
   renderAnnouncement();toast(t?"Announcement published":"Announcement cleared","ok");
 }
 function clearAnnouncementAdmin(){
-  try{localStorage.removeItem("arcvault_announcement");}catch(_){}
+  try{localStorage.removeItem("keystone_announcement");}catch(_){}
   const a=document.getElementById("ccAnn");if(a)a.value="";
   renderAnnouncement();toast("Announcement cleared","inf");
 }
@@ -2009,23 +2010,23 @@ ccCheckHash();
 setInterval(async()=>{try{const b=await readProvider.getBlockNumber();document.getElementById("kBlock").textContent="#"+b.toLocaleString();document.getElementById("sideBlock").textContent="Block #"+b.toLocaleString();}catch(_){}},6000);
 </script>
 <script>
-/* ===== ARCVAULT LANDING (isolated — does not touch app scope) ===== */
+/* ===== KEYSTONE LANDING (isolated — does not touch app scope) ===== */
 (function(){
   var landing=document.getElementById("landing");
   if(!landing) return;
 
   /* returning within session skips straight to app */
-  try{ if(sessionStorage.getItem("arcvault_entered")==="1"){ landing.classList.add("hide"); } }catch(e){}
+  try{ if(sessionStorage.getItem("keystone_entered")==="1"){ landing.classList.add("hide"); } }catch(e){}
 
   /* enter app */
   window.enterApp=function(){
     landing.classList.add("fade-out");
-    try{ sessionStorage.setItem("arcvault_entered","1"); }catch(e){}
+    try{ sessionStorage.setItem("keystone_entered","1"); }catch(e){}
     setTimeout(function(){ landing.classList.add("hide"); window.scrollTo(0,0); },560);
   };
   window.showLanding=function(){
     landing.classList.remove("hide","fade-out");
-    try{ sessionStorage.removeItem("arcvault_entered"); }catch(e){}
+    try{ sessionStorage.removeItem("keystone_entered"); }catch(e){}
     window.scrollTo(0,0);
   };
   window.lpScroll=function(id){
