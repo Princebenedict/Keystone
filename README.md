@@ -1,218 +1,151 @@
- # Keystone
+# Keystone
 
-> The Intelligence Layer for Arc. Build, discover, invest, deploy and manage
-> tokenized assets, stablecoin applications and AI-powered financial
-> infrastructure on Arc.
+> The intelligence layer for tokenized real-world assets, built on Arc Network. Launch onchain asset tokens, fund them with USDC, and manage investor positions through a fully contract-backed interface.
 
-## Trademark
-Built on Arc Network. Arc™ is a trademark of Circle Internet Group, Inc. and/or its affiliates. Keystone is an independent product and is not endorsed by or formally affiliated with Circle.
-
- frontend.
-
+[![Built on Arc](https://img.shields.io/badge/Built%20on-Arc-00d4aa)](https://www.arc.io)
 [![Foundry](https://img.shields.io/badge/Built%20With-Foundry-f0b90b)](#local-development)
 [![Arc Testnet](https://img.shields.io/badge/Network-Arc%20Testnet-00d4aa)](#deployed-addresses)
-[![Vercel](https://img.shields.io/badge/Frontend-Vercel-black)](#live-demo)
 [![License](https://img.shields.io/badge/License-MIT-green)](#license)
 
 ## Live Demo
-[https://arc-launchpad.vercel.app/](https://arc-launchpad.vercel.app/)
+https://keystone.vercel.app
 
 ## One-Line Pitch
-Keystone turns asset issuance and investment into an onchain experience: founders launch tokenized offerings, investors discover real contract-created listings, buy with USDC, and claim dividends directly from the app.
+Keystone turns asset issuance and investment into an onchain experience: founders launch tokenized offerings, investors discover real contract-created listings, buy with USDC, and claim dividends directly from the app. Every listing is a real deployed contract. No mock data.
+
+## Built on Arc
+Keystone is built natively on Arc Network, Circle's stablecoin-native L1:
+- USDC is the native gas and settlement token, so every fee is dollar-denominated and predictable
+- Sub-second deterministic finality makes launching and investing feel like a normal app
+- Circle-native rails (CCTP v2, StableFX, USYC) are surfaced in the Stablecoin Hub for cross-chain funding and treasury yield
 
 ## The Problem
 Access to real-world asset participation is still fragmented:
 - founders rely on slow, manual fundraising flows
 - investors face opaque access and weak transparency
 - product experiences often show mock data instead of real contract state
-- portfolio visibility is rarely tied directly to deployed token contracts
+- there is no discovery and intelligence layer where trust is verifiable rather than assumed
 
 ## The Solution
-Keystone solves that with a launchpad built around real onchain primitives:
-- a factory contract deploys an asset token per listing
-- the frontend reads only actual launchpad-created assets
-- risk tier is stored onchain
-- purchase cost basis is stored onchain
-- investors interact with live contracts through wallet actions
-
-## Why It Stands Out
-- Real contract-backed asset listings, not seeded mock cards
-- Onchain risk metadata
-- Onchain investor cost basis tracking
-- USDC-denominated asset purchase flow
-- Clean explorer, launch, and portfolio UX in one interface
-- Built specifically around Arc Testnet deployment
+Keystone is built around real onchain primitives:
+- a factory contract deploys a dedicated asset token per listing
+- the frontend reads only actual factory-created assets
+- risk tier and investor cost basis are stored onchain
+- an AI risk engine scores every asset from live chain data
+- an onchain builder reputation lets investors verify a founder's track record
 
 ## Core Features
-- Launch new asset tokens from `AssetLaunchpad`
-- Deploy dedicated `AssetToken` contracts for each asset
-- Explore only onchain-created listings
-- Buy tokens with USDC
-- Track portfolio positions by wallet
-- Claim dividends directly from token contracts
-- View asset metadata including type, risk tier, valuation, and pricing
+- **Builder Studio** — a guided five-step flow to launch a tokenized asset (project, tokenomics, risk, AI review, deploy)
+- **Discover** — a live marketplace of real listings with AI risk scores, verified badges, and funding progress
+- **AI Risk Engine** — a 0 to 10 score computed from onchain risk tier, funding traction, contract age, and valuation
+- **Vault** — portfolio value, onchain cost basis, profit and loss, and claimable dividends, with one-click Claim All
+- **Builder Reputation** — a 0 to 100 trust score from deployments, capital raised, activity, and tenure
+- **Founder Dashboard** — distribute dividends, withdraw raised capital, and manage listing visibility
+- **Stablecoin Hub** — USDC settlement view and Circle-native rails
+- **AI Copilot** — an in-browser assistant that answers from live chain state
+- Transaction feedback with Arcscan links, network guard, wallet connect and disconnect, and a fully responsive mobile layout
 
 ## Product Flow
 ```text
 Founder
-  -> launches asset via AssetLaunchpad
-  -> AssetLaunchpad deploys AssetToken
-  -> asset becomes visible in Explore
-
+  -> launches asset via the factory (Builder Studio)
+  -> factory deploys a dedicated asset token
+  -> asset becomes visible in Discover
 Investor
-  -> Explore reads launchpad contract
-  -> Selects an onchain asset
-  -> Approves USDC
-  -> Purchases tokens
-  -> Portfolio reads holdings from token contracts
-  -> Claims dividends from token contract
+  -> Discover reads the factory contract
+  -> selects an onchain asset
+  -> approves USDC
+  -> purchases tokens
+  -> Vault reads holdings, cost basis, and dividends from token contracts
+  -> claims dividends
+```
 
-Contract Design
-AssetLaunchpad
-Factory contract responsible for:
+## Contract Design
 
-charging listing fee in USDC
-deploying new AssetToken contracts
-storing asset registry data
-exposing all launched assets to the frontend
-AssetToken
-Per-asset contract responsible for:
+### AssetLaunchpad (factory)
+- charges a listing fee in USDC
+- deploys new asset token contracts
+- stores the asset registry
+- exposes all launched assets to the frontend via getAllAssets()
 
-asset metadata
-company information
-asset type
-risk tier
-valuation
-token price
-max supply
-total raised
-total invested per wallet
-total purchased tokens per wallet
-dividend distribution and claiming
+### AssetToken (per asset)
+- asset metadata, company info, asset type, risk tier, valuation, price, and max supply
+- total raised, total invested per wallet, total purchased tokens per wallet
+- dividend distribution and claiming
 
-Deployed Addresses
-Launchpad: 0x705C2b9D3B06eeF72831F463Ca6eBc5A9B543e3b
-USDC:      0x3600000000000000000000000000000000000000
-Network:   Arc Testnet
-Chain ID:  5042002
-RPC:       https://rpc.testnet.arc.network
-Explorer:  https://testnet.arcscan.app
+## Deployed Addresses
+```text
+Factory (AssetLaunchpad): 0x705C2b9D3B06eeF72831F463Ca6eBc5A9B543e3b
+USDC (native gas token):  0x3600000000000000000000000000000000000000
+Network:                  Arc Testnet
+Chain ID:                 5042002
+RPC:                      https://rpc.testnet.arc.network
+Explorer:                 https://testnet.arcscan.app
+```
+Per-asset token contracts are deployed by the factory on each launch and are readable onchain via getAllAssets().
 
+## Tech Stack
+Solidity, Foundry, Ethers.js, HTML, CSS, JavaScript, Vercel.
 
-
-Frontend Highlights
-The frontend is intentionally wired to real chain data:
-
-Explore Assets reads directly from AssetLaunchpad.getAllAssets()
-each asset card is enriched from the live AssetToken contract
-Launch Asset writes directly onchain
-Portfolio reads balances, pending dividends, and cost basis from contracts
-risk tier is not guessed in the UI
-
-
-
-Tech Stack
-Solidity
-Foundry
-Ethers.js
-HTML
-CSS
-JavaScript
-GitHub Actions
-Vercel
-
-
-
-
-
-Repository Structure
-Keystone/
+## Repository Structure
+```text
+keystone/
 ├── contracts/
-│   ├── AssetToken.sol          ← ERC-20 per asset + dividends
-│   └── AssetLaunchpad.sol      ← Factory that deploys AssetTokens
+│   ├── AssetToken.sol          asset token per listing plus dividends
+│   └── AssetLaunchpad.sol      factory that deploys asset tokens
 ├── script/
-│   └── DeployLaunchpad.s.sol   ← Foundry deploy script
+│   └── DeployLaunchpad.s.sol   Foundry deploy script
 ├── test/
-│   └── AssetLaunchpad.t.sol    ← Unit tests
-├── .env                        ← your secrets (never commit)
-├── foundry.toml                ← Foundry config
+│   └── AssetLaunchpad.t.sol    unit tests
+├── .env                        secrets, never commit
+├── foundry.toml
 ├── .gitignore
-└── index.html                  ← Full frontend wired to Arc
+└── index.html                  full frontend wired to Arc
+```
 
 
+## Local Development
+```bash
+forge build          # build contracts
+forge test           # run tests
+forge fmt            # format
+```
 
+### Deploy Contracts
+```bash
+PRIVATE_KEY=0xYOUR_PRIVATE_KEY forge script script/DeployLaunchpad.s.sol:DeployLaunchpad \
+  --rpc-url https://rpc.testnet.arc.network --broadcast
+```
+After deployment, update the factory address in index.html and in this README, then push.
 
-Local Development
-
-Build
-forge build
-
-Test
-forge test
-
-Format
-forge fmt
-
-Check formatting
-forge fmt --check
-
-
-Deploy Contracts
-Deployment uses the Foundry script and reads PRIVATE_KEY from the environment.
-
-PRIVATE_KEY=0xYOUR_PRIVATE_KEY forge script script/DeployLaunchpad.s.sol:DeployLaunchpad --rpc-url https://rpc.testnet.arc.network --broadcast
-After deployment:
-
-copy the new launchpad address from the logs
-update LAUNCHPAD_ADDRESS in index.html
-update the address in this README
-push the changes to GitHub
-Redeploy Frontend
-After updating index.html:
-
+### Redeploy Frontend
+```bash
 git add .
-git commit -m "Update frontend for redeployed launchpad"
+git commit -m "update frontend"
 git push origin main
-If Vercel is connected to GitHub, the site redeploys automatically.
+```
+Vercel redeploys automatically on push to main.
 
-CI Notes
-This repo uses Foundry CI checks. If CI fails on formatting:
+## Demo Walkthrough
+1. Open the app and connect your wallet (auto-switches to Arc Testnet)
+2. Launch an asset from Builder Studio
+3. Explore live contract-created listings in Discover
+4. Select an asset, approve USDC, and invest onchain
+5. View live holdings in the Vault
+6. Claim dividends
 
-forge fmt
-git add .
-git commit -m "chore: format solidity files"
-git push origin main
+## Roadmap
+- Event indexing for faster data loading
+- USYC integration to route idle raise capital into yield
+- CCTP v2 for cross-chain investor funding
+- Onchain pause flag for trustless listing moderation
+- Deeper founder and portfolio analytics
 
-
-
-
-Demo Walkthrough
-Connect wallet
-Launch asset from the launch form
-Explore live contract-created listings
-Select a tokenized asset
-Approve USDC
-Invest onchain
-View live portfolio holdings
-Claim dividends
-
-
-
-Future Improvements
-event indexing for faster data loading
-founder analytics dashboard
-deeper portfolio analytics
-stronger secondary market settlement
-onchain buyback / redemption mechanics
-richer investor protection logic
-
-
-
-Author
+## Author
 Princebenedict
 
-
-
-License
+## License
 MIT
 
+## Trademark
+Built on Arc Network. Arc™ is a trademark of Circle Internet Group, Inc. and/or its affiliates. Keystone is an independent product and is not endorsed by or formally affiliated with Circle.
