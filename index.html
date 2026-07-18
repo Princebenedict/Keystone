@@ -1045,8 +1045,27 @@ const ERC20_ABI = [
   "function allowance(address owner,address spender) view returns (uint256)"
 ];
 
-const readProvider = new ethers.JsonRpcProvider(RPC_URL, {chainId:CHAIN_ID, name:"arc-testnet"}, {staticNetwork:true, batchMaxCount:1});
-const readLaunchpad = new ethers.Contract(LAUNCHPAD_ADDRESS, LAUNCHPAD_ABI, readProvider);
+/* ---- RPC endpoints with automatic failover ----
+   The first is confirmed working. Add more verified Arc Testnet RPC URLs to
+   this list and the app will rotate to the next one whenever one rate-limits. */
+const RPC_URLS = [
+  "https://rpc.testnet.arc.network"
+  // , "https://your-verified-fallback-rpc"   // add verified endpoints here
+];
+let rpcIndex = 0;
+function makeProvider(url){
+  return new ethers.JsonRpcProvider(url, {chainId:CHAIN_ID, name:"arc-testnet"}, {staticNetwork:true, batchMaxCount:1});
+}
+let readProvider = makeProvider(RPC_URLS[rpcIndex]);
+function rotateProvider(){
+  if(RPC_URLS.length<2) return false;
+  rpcIndex = (rpcIndex+1) % RPC_URLS.length;
+  readProvider = makeProvider(RPC_URLS[rpcIndex]);
+  readLaunchpad = new ethers.Contract(LAUNCHPAD_ADDRESS, LAUNCHPAD_ABI, readProvider);
+  console.warn("Rotated to RPC:", RPC_URLS[rpcIndex]);
+  return true;
+}
+let readLaunchpad = new ethers.Contract(LAUNCHPAD_ADDRESS, LAUNCHPAD_ABI, readProvider);
 
 /* STATE */
 let signer=null, wallet=null;
@@ -1118,50 +1137,66 @@ function builderScore(addr){
 /* LOAD CHAIN DATA — resilient: skips incompatible legacy assets */
 /* ---- rate-limit-safe loading helpers ---- */
 const sleep = ms => new Promise(r=>setTimeout(r,ms));
-async function withRetry(fn, tries=3, delay=600){
+async function withRetry(fn, tries=4, delay=700){
   for(let i=0;i<tries;i++){
     try{ return await fn(); }
     catch(e){
       const msg=(e&&(e.message||""))+"";
-      const rate = msg.includes("429")||msg.includes("Too Many")||msg.includes("rate")||msg.includes("limit")||msg.includes("-32011")||msg.includes("coalesce");
+      const rate = msg.includes("429")||msg.includes("Too Many")||msg.includes("rate")||msg.includes("limit")||msg.includes("-32011")||msg.includes("coalesce")||msg.includes("could not detect network");
       if(i===tries-1) throw e;
+      if(rate) rotateProvider();
       await sleep(delay*(i+1)*(rate?3:1));
     }
   }
 }
 // run async tasks in small batches with a pause between batches (avoids RPC 429)
-async function runBatched(items, worker, batchSize=6, pause=350){
+async function runBatched(items, worker, batchSize=3, pause=900, onProgress){
   const out=[];
   for(let i=0;i<items.length;i+=batchSize){
     const slice=items.slice(i,i+batchSize);
     const res=await Promise.allSettled(slice.map(worker));
     out.push(...res);
+    if(onProgress){ try{ onProgress(); }catch(_){} }
     if(i+batchSize<items.length) await sleep(pause);
   }
   return out;
 }
-async function loadOneAsset(a){
-  const t=new ethers.Contract(a.tokenContract,ASSET_TOKEN_ABI,readProvider);
+// fetch only the financial detail fields for one asset
+async function loadOneAssetDetails(addr){
+  const t=new ethers.Contract(addr,ASSET_TOKEN_ABI,readProvider);
   const [company,desc,val,price,maxS,active,created,raised,supply]=await withRetry(()=>Promise.all([
     t.companyName(),t.description(),t.totalValuation(),t.pricePerToken(),
     t.maxSupply(),t.isActive(),t.createdAt(),t.totalRaised(),t.totalSupply()
   ]));
   return {
-    tokenContract:a.tokenContract, name:a.name, symbol:a.symbol,
-    founder:a.founder, assetType:Number(a.assetType), riskTier:Number(a.riskTier),
-    listedAt:Number(a.listedAt)*1000, company, description:desc,
+    company, description:desc,
     target:Number(ethers.formatUnits(val,6)), price:Number(ethers.formatUnits(price,6)),
     priceRaw:price, maxSupply:Number(maxS), active,
     createdAt:Number(created)*1000, raised:Number(ethers.formatUnits(raised,6)),
     sold:Number(ethers.formatUnits(supply,18))
   };
 }
+// render helpers
+function fullRender(){
+  renderKPIs(); renderFeed(); renderInsights(); renderTrending();
+  renderDiscover(); renderAnalytics(); renderStableHub();
+}
+let _lastRender=0;
+function throttledRender(){
+  const now=Date.now();
+  if(now-_lastRender<450) return;
+  _lastRender=now;
+  fullRender();
+}
+function setBlockDisplay(b){
+  document.getElementById("kBlock").textContent="#"+b.toLocaleString();
+  document.getElementById("sideBlock").textContent="Block #"+b.toLocaleString();
+}
 
 async function loadEverything(){
   try{
     const block = await withRetry(()=>readProvider.getBlockNumber());
-    document.getElementById("kBlock").textContent="#"+block.toLocaleString();
-    document.getElementById("sideBlock").textContent="Block #"+block.toLocaleString();
+    setBlockDisplay(block);
 
     // Guard: confirm a contract exists at the launchpad address
     const code = await withRetry(()=>readProvider.getCode(LAUNCHPAD_ADDRESS));
@@ -1179,31 +1214,61 @@ async function loadEverything(){
       return;
     }
 
+    // ONE call returns name/symbol/founder/type/risk/listedAt for every asset.
+    // This alone gives real asset count, builders, and the activity feed — instantly.
     const assets = await withRetry(()=>readLaunchpad.getAllAssets());
 
-    // Load in small batches with pauses + retry so the RPC does not rate-limit (429)
-    const results = await runBatched(assets, loadOneAsset, 3, 900);
+    // seed financials from cache (instant) if we have it
+    let cacheMap={};
+    try{
+      const c=JSON.parse(localStorage.getItem("keystone_assets_cache")||"null");
+      if(Array.isArray(c)) c.forEach(p=>{ if(p&&p.tokenContract) cacheMap[p.tokenContract.toLowerCase()]=p; });
+    }catch(_){}
 
-    const skipped=[];
-    projects = results.map((r,i)=>{
-      if(r.status==="fulfilled") return r.value;
-      skipped.push(assets[i].tokenContract);
-      return null;
-    }).filter(Boolean);
-
-    // newest first
+    projects = assets.map((a,idx)=>{
+      const c=cacheMap[(a.tokenContract||"").toLowerCase()]||{};
+      const hasCache = c.target!==undefined;
+      return {
+        id:idx, tokenContract:a.tokenContract, name:a.name, symbol:a.symbol,
+        founder:a.founder, assetType:Number(a.assetType), riskTier:Number(a.riskTier),
+        listedAt:Number(a.listedAt)*1000,
+        company:c.company||"", description:c.description||"",
+        target:c.target||0, price:c.price||0,
+        priceRaw: c.price?ethers.parseUnits(String(c.price),6):0n,
+        maxSupply:c.maxSupply||0, active:(c.active!==undefined)?c.active:true,
+        createdAt:c.createdAt||Number(a.listedAt)*1000,
+        raised:c.raised||0, sold:c.sold||0,
+        loaded: hasCache
+      };
+    });
     projects.sort((a,b)=>b.listedAt-a.listedAt);
     projects.forEach((p,i)=>p.id=i);
 
-    if(skipped.length) console.warn("Could not load "+skipped.length+" of "+assets.length+" assets (likely rate-limited or legacy):",skipped);
-    console.log("Loaded "+projects.length+" of "+assets.length+" assets");
-
-    renderKPIs(); renderFeed(); renderInsights(); renderTrending();
-    renderDiscover(); renderAnalytics(); renderStableHub();
+    // Render immediately — count, builders and the activity feed are REAL right now.
+    fullRender();
     if(wallet) renderVault();
+
+    // Progressively fetch real financials. Assets are NEVER dropped if a read fails —
+    // they keep their on-chain name/symbol/type/risk from getAllAssets().
+    await runBatched(projects, async p=>{
+      const d=await loadOneAssetDetails(p.tokenContract);
+      Object.assign(p, d, {loaded:true});
+    }, 3, 900, throttledRender);
+
+    fullRender();
+    if(wallet) renderVault();
+
+    // cache (strip bigint priceRaw which cannot be JSON-serialized)
+    try{
+      const slim=projects.filter(p=>p.loaded).map(({priceRaw,...rest})=>rest);
+      localStorage.setItem("keystone_assets_cache", JSON.stringify(slim));
+    }catch(_){}
+
+    const failed=projects.filter(p=>!p.loaded).length;
+    console.log("Assets: "+projects.length+" total"+(failed?(", "+failed+" details still pending (rate-limited)"):", all details loaded"));
   }catch(e){
     console.error(e);
-    toast("Chain read error — check console for details","err");
+    toast("Chain read error — data will retry","err");
   }
 }
 
@@ -1303,9 +1368,16 @@ function assetCardHTML(p){
 }
 
 /* ASSET MODAL */
-function openAsset(id){
+async function openAsset(id){
   currentAsset=projects.find(p=>p.id===id);
   if(!currentAsset)return;
+  // if this asset's financials never loaded (rate-limited earlier), fetch them now on demand
+  if(!currentAsset.loaded){
+    try{
+      const d=await loadOneAssetDetails(currentAsset.tokenContract);
+      Object.assign(currentAsset, d, {loaded:true});
+    }catch(_){}
+  }
   const p=currentAsset, re=riskEngine(p);
   const pct=p.target>0?Math.min(100,(p.raised/p.target)*100):0;
   const bs=builderScore(p.founder);
@@ -2044,7 +2116,7 @@ loadEverything();
 restoreSession();
 renderAnnouncement();
 ccCheckHash();
-setInterval(async()=>{try{const b=await readProvider.getBlockNumber();document.getElementById("kBlock").textContent="#"+b.toLocaleString();document.getElementById("sideBlock").textContent="Block #"+b.toLocaleString();}catch(_){}},6000);
+setInterval(async()=>{try{const b=await readProvider.getBlockNumber();document.getElementById("kBlock").textContent="#"+b.toLocaleString();document.getElementById("sideBlock").textContent="Block #"+b.toLocaleString();}catch(_){}},15000);
 </script>
 <script>
 /* ===== KEYSTONE LANDING (isolated — does not touch app scope) ===== */
